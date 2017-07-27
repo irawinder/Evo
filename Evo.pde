@@ -33,7 +33,7 @@ Arena arena;
 int FOOD_TIMER = 20;   // P_f
 int FOOD_SIZE = 15;    // D_f
 int SPAWN_COUNT = 5;   // S_b
-float MAX_SPEED = 1.0; // V_b
+float MAX_SPEED = 2.0; // V_b
 int MAX_HUNGER = 500;  // H_b
 int counter;
 
@@ -116,7 +116,7 @@ void draw() {
           newAcceleration = new PVector(bug.acceleration.x, bug.acceleration.y);
           newBug = new Bug(30, MAX_SPEED, newLocation, MAX_HUNGER, SPAWN_COUNT);
           newBug.velocity = newVelocity;
-          //newBug.acceleration = newAcceleration;
+          newBug.acceleration = newAcceleration;
           
           population.add(newBug);
         }
@@ -189,8 +189,9 @@ class Bug {
   }
   
   void update(Arena a) {
-    acceleration.x += random(-1.0, 1.0);
-    acceleration.y += random(-1.0, 1.0);
+    float MAX_ACC = 1.0;
+    acceleration.x = random(-MAX_ACC, MAX_ACC);
+    acceleration.y = random(-MAX_ACC, MAX_ACC);
     velocity.add(acceleration);
     
     if (velocity.mag() > maxSpeed) {
