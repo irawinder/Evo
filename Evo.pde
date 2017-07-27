@@ -55,7 +55,7 @@ void setup() {
     randomX = random(0, arena.w);
     randomY = random(0, arena.h);
     randomLocation = new PVector(randomX, randomY);
-    randomBug = new Bug(30, MAX_SPEED, randomLocation, MAX_HUNGER, SPAWN_COUNT, BUG_SIZE);
+    randomBug = new Bug(MAX_SPEED, randomLocation, MAX_HUNGER, SPAWN_COUNT, BUG_SIZE);
     population.add(randomBug);
   }
 
@@ -116,7 +116,7 @@ void draw() {
           newLocation = new PVector(bug.location.x, bug.location.y);
           newVelocity = new PVector(bug.velocity.x, bug.velocity.y);
           newAcceleration = new PVector(bug.acceleration.x, bug.acceleration.y);
-          newBug = new Bug(30, MAX_SPEED, newLocation, MAX_HUNGER, SPAWN_COUNT, BUG_SIZE, bug.bodyColor);
+          newBug = new Bug(MAX_SPEED, newLocation, MAX_HUNGER, SPAWN_COUNT, BUG_SIZE, bug.bodyColor);
           newBug.velocity = newVelocity;
           //newBug.acceleration = newAcceleration;
 
@@ -170,14 +170,13 @@ class Arena {
 }
 
 class Bug {
-  float sightRange, maxSpeed;
+  float maxSpeed;
   PVector location, velocity, acceleration;
   int hunger, maxHunger, spawnSize, size;
   boolean starved, spawn;
   color bodyColor = -1;
 
-  Bug(float sightRange, float maxSpeed, PVector location, int maxHunger, int spawnSize, int size) {
-    this.sightRange = sightRange;
+  Bug(float maxSpeed, PVector location, int maxHunger, int spawnSize, int size) {
     this.maxSpeed = maxSpeed;
     this.location = location;
     this.maxHunger = maxHunger;
@@ -185,7 +184,7 @@ class Bug {
     this.size = size;
 
     if (this.bodyColor == -1) {
-      this.bodyColor = color(random(255), random(255), random(255));
+      this.bodyColor = color(random(125), random(255), random(255));
     }
     velocity = new PVector(0,0,0);
     acceleration = new PVector(0,0,0);
@@ -195,8 +194,8 @@ class Bug {
     spawn = false;
   }
 
-  Bug(float sightRange, float maxSpeed, PVector location, int maxHunger, int spawnSize, int size, color bodyColor) {
-    this(sightRange, maxSpeed, location, maxHunger, spawnSize, size);
+  Bug(float maxSpeed, PVector location, int maxHunger, int spawnSize, int size, color bodyColor) {
+    this(maxSpeed, location, maxHunger, spawnSize, size);
     this.bodyColor = bodyColor;
   }
 
