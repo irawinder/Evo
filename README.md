@@ -20,5 +20,5 @@ Environment for testing natural selection processes on some digital "bugs"
     - The canvas is "infinite" (i.e. if bug wanders off left side it will appear on right side, and vice versa)
     - Upon encountering food, a bug will eat it.  The polygon representing the bug and the food must intersect.
     - If a bug goes length of time H_b without eating food it will disappear from simulation
-    - Upon eating food, the bug will become completely "full,"  and will instantly generate offspring of amount S_b
+    - Upon eating food, the bug will become completely "full" and will instantly generate offspring of amount S_b
     - Every amount of time P_f, a unit of food is placed randomly on the canvas
