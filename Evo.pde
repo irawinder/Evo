@@ -30,17 +30,18 @@ ArrayList<Bug> population;
 ArrayList<Food> noms;
 Arena arena;
 
-int FOOD_TIMER = 20;
-int SPAWN_COUNT = 5;
-float MAX_SPEED = 1.0;
-int MAX_HUNGER = 500;
+int FOOD_TIMER = 20;   // P_f
+int FOOD_SIZE = 15;    // D_f
+int SPAWN_COUNT = 5;   // S_b
+float MAX_SPEED = 1.0; // V_b
+int MAX_HUNGER = 500;  // H_b
 int counter;
 
 boolean run;
 
 void setup() {
   size(1280, 764);
-  arena = new Arena(600, 600);
+  arena = new Arena(600, 600); // W, H
   population = new ArrayList<Bug>();
   noms = new ArrayList<Food>();
   
@@ -63,7 +64,7 @@ void setup() {
     randomX = random(0, arena.w);
     randomY = random(0, arena.h);
     randomLocation = new PVector(randomX, randomY);
-    randomFood = new Food(randomLocation);
+    randomFood = new Food(randomLocation, FOOD_SIZE);
     noms.add(randomFood);
   }
   
@@ -89,7 +90,7 @@ void draw() {
       randomX = random(0, arena.w);
       randomY = random(0, arena.h);
       randomLocation = new PVector(randomX, randomY);
-      newFood = new Food(randomLocation);
+      newFood = new Food(randomLocation, FOOD_SIZE);
       noms.add(newFood);
       
       counter = 0;
@@ -234,17 +235,17 @@ class Bug {
 
 class Food {
   PVector location;
+  int size;
   
-  int FOOD_SIZE = 15;
-  
-  Food(PVector location) {
+  Food(PVector location, int size) {
     this.location = location;
+    this.size = size;
   }
   
   boolean eat(PVector bugLocation) {
     PVector distance = new PVector(bugLocation.x, bugLocation.y);
     distance.sub(location);
-    if (distance.mag() < FOOD_SIZE/2) {
+    if (distance.mag() < size/2) {
       return true;
     } else {
       return false;
@@ -253,7 +254,7 @@ class Food {
   
   void draw() {
     fill(#00FF00, 100);
-    ellipse(location.x, location.y, FOOD_SIZE, FOOD_SIZE);
+    ellipse(location.x, location.y, size, size);
   }
 }
 
