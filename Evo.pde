@@ -141,7 +141,7 @@ void draw() {
   if (!run) {
     fill(255);
     textAlign(CENTER);
-    text("Press SPACEBAR to begin.", arena.w/2, arena.h/2);
+    text("Press SPACEBAR to begin", arena.w/2, arena.h/2);
   }
 }
 
