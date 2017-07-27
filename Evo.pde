@@ -61,7 +61,7 @@ void setup() {
   
   // Random Food
   Food randomFood;
-  for (int i=0; i<10; i++) {
+  for (int i=0; i<20; i++) {
     randomX = random(0, arena.w);
     randomY = random(0, arena.h);
     randomLocation = new PVector(randomX, randomY);
@@ -105,6 +105,7 @@ void draw() {
         if (nom.eat(bug.location, bug.size)) {
           bug.full();
           noms.remove(f);
+          break;
         }
       }
       
