@@ -30,8 +30,10 @@ ArrayList<Bug> population;
 ArrayList<Food> noms;
 Arena arena;
 
-int FOOD_TIMER = 10;
-int SPAWN_COUNT = 10;
+int FOOD_TIMER = 20;
+int SPAWN_COUNT = 5;
+float MAX_SPEED = 1.0;
+int MAX_HUNGER = 500;
 int counter;
 
 boolean run;
@@ -51,7 +53,7 @@ void setup() {
     randomX = random(0, arena.w);
     randomY = random(0, arena.h);
     randomLocation = new PVector(randomX, randomY);
-    randomBug = new Bug(30, 1, randomLocation, 500, SPAWN_COUNT);
+    randomBug = new Bug(30, MAX_SPEED, randomLocation, MAX_HUNGER, SPAWN_COUNT);
     population.add(randomBug);
   }
   
@@ -105,11 +107,16 @@ void draw() {
       }
       
       // Random Bugs
-      PVector newLocation;
+      PVector newLocation, newVelocity, newAcceleration;
       if (bug.spawn) {
         for (int j=0; j<bug.spawnSize; j++) {
           newLocation = new PVector(bug.location.x, bug.location.y);
-          newBug = new Bug(30, 1, newLocation, 500, SPAWN_COUNT);
+          newVelocity = new PVector(bug.velocity.x, bug.velocity.y);
+          newAcceleration = new PVector(bug.acceleration.x, bug.acceleration.y);
+          newBug = new Bug(30, MAX_SPEED, newLocation, MAX_HUNGER, SPAWN_COUNT);
+          newBug.velocity = newVelocity;
+          //newBug.acceleration = newAcceleration;
+          
           population.add(newBug);
         }
         bug.spawn = false;
