@@ -17,7 +17,7 @@ Environment for testing natural selection processes on some digital "bugs"
   ## Key Behaviors
 
     - Bug acceleration is "random" in 2D space but velocity never exceeds V_b
-    - The canvas is "infinite" (i.e. if a bug wanders of the left side, it will appear on the right side, and vice versa)
+    - The canvas is "infinite" (i.e. if bug wanders off left side, it will appear on right side, and vice versa)
     - Upon encountering food, a bug will eat it.  The polygon representing the bug and the food must intersect.
     - If a bug goes length of time H_b without eating food it will disappear from simulation
     - Upon eating food, the bug will become completely "full,"  and will instantly generate offspring of amount S_b
