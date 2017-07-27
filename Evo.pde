@@ -4,7 +4,7 @@
  */
 
 /*  Key Parameters:
- *  
+ *
  *    W, width of canvas [pixels]
  *    H, height of canvas [pixels]
  *
@@ -45,10 +45,10 @@ void setup() {
   arena = new Arena(600, 600); // W, H
   population = new ArrayList<Bug>();
   noms = new ArrayList<Food>();
-  
+
   PVector randomLocation;
   float randomX, randomY;
-  
+
   // Random Bugs
   Bug randomBug;
   for (int i=0; i<10; i++) {
@@ -58,7 +58,7 @@ void setup() {
     randomBug = new Bug(30, MAX_SPEED, randomLocation, MAX_HUNGER, SPAWN_COUNT, BUG_SIZE);
     population.add(randomBug);
   }
-  
+
   // Random Food
   Food randomFood;
   for (int i=0; i<20; i++) {
@@ -68,7 +68,7 @@ void setup() {
     randomFood = new Food(randomLocation, FOOD_SIZE);
     noms.add(randomFood);
   }
-  
+
   counter = 0;
   run = false;
 }
@@ -78,12 +78,12 @@ Bug bug, newBug;
 
 void draw() {
   background(0);
-  
+
   translate(width/2 - arena.w/2, height/2 - arena.h/2);
   arena.draw();
-  
+
   if (run) {
-  
+
     // Random Food
     if (counter >= FOOD_TIMER) {
       PVector randomLocation;
@@ -93,10 +93,10 @@ void draw() {
       randomLocation = new PVector(randomX, randomY);
       newFood = new Food(randomLocation, FOOD_SIZE);
       noms.add(newFood);
-      
+
       counter = 0;
     }
-    
+
     // Update Food
     for (int b=population.size()-1; b>=0; b--) {
       bug = population.get(b);
@@ -108,7 +108,7 @@ void draw() {
           break;
         }
       }
-      
+
       // Random Bugs
       PVector newLocation, newVelocity, newAcceleration;
       if (bug.spawn) {
@@ -116,16 +116,16 @@ void draw() {
           newLocation = new PVector(bug.location.x, bug.location.y);
           newVelocity = new PVector(bug.velocity.x, bug.velocity.y);
           newAcceleration = new PVector(bug.acceleration.x, bug.acceleration.y);
-          newBug = new Bug(30, MAX_SPEED, newLocation, MAX_HUNGER, SPAWN_COUNT, BUG_SIZE);
+          newBug = new Bug(30, MAX_SPEED, newLocation, MAX_HUNGER, SPAWN_COUNT, BUG_SIZE, bug.bodyColor);
           newBug.velocity = newVelocity;
           //newBug.acceleration = newAcceleration;
-          
+
           population.add(newBug);
         }
         bug.spawn = false;
       }
     }
-    
+
     // Update Bugs
     for (int i=population.size()-1; i>=0; i--) {
       bug = population.get(i);
@@ -134,20 +134,20 @@ void draw() {
       }
       bug.update(arena);
     }
-    
+
     counter++;
   }
-  
+
   // Draw Food
   for (Food f : noms) {
     f.draw();
   }
-  
+
   // Draw Bugs
   for (Bug b : population) {
     b.draw();
   }
-  
+
   if (!run) {
     fill(255);
     textAlign(CENTER);
@@ -157,12 +157,12 @@ void draw() {
 
 class Arena {
   int w, h;
-  
+
   Arena(int w, int h) {
    this.w = w;
-   this.h = h; 
+   this.h = h;
   }
-  
+
   void draw() {
     noFill(); stroke(50); strokeWeight(FOOD_SIZE);
     rect(0, 0, w, h, FOOD_SIZE);
@@ -174,7 +174,8 @@ class Bug {
   PVector location, velocity, acceleration;
   int hunger, maxHunger, spawnSize, size;
   boolean starved, spawn;
-  
+  color bodyColor = -1;
+
   Bug(float sightRange, float maxSpeed, PVector location, int maxHunger, int spawnSize, int size) {
     this.sightRange = sightRange;
     this.maxSpeed = maxSpeed;
@@ -182,56 +183,64 @@ class Bug {
     this.maxHunger = maxHunger;
     this.spawnSize = spawnSize;
     this.size = size;
-    
+
+    if (this.bodyColor == -1) {
+      this.bodyColor = color(random(255), random(255), random(255));
+    }
     velocity = new PVector(0,0,0);
     acceleration = new PVector(0,0,0);
-    
+
     hunger = 0;
     starved = false;
     spawn = false;
   }
-  
+
+  Bug(float sightRange, float maxSpeed, PVector location, int maxHunger, int spawnSize, int size, color bodyColor) {
+    this(sightRange, maxSpeed, location, maxHunger, spawnSize, size);
+    this.bodyColor = bodyColor;
+  }
+
   void update(Arena a) {
     float MAX_ACC = 2.0;
     acceleration.x += random(-MAX_ACC, MAX_ACC);
     acceleration.y += random(-MAX_ACC, MAX_ACC);
     velocity.add(acceleration);
-    
+
     if (velocity.mag() > maxSpeed) {
       velocity.setMag(maxSpeed);
     }
-    
+
     location.add(velocity);
-    
+
     if (location.x < 0) {
       location.x = arena.w + location.x;
     } else if (location.x > a.w) {
       location.x = location.x - arena.w;
     }
-    
+
     if (location.y < 0) {
       location.y = arena.h + location.y;
     } else if (location.y > a.h) {
       location.y = location.y - arena.h;
     }
-    
+
     hunger++;
     if (hunger >= maxHunger) {
       starved = true;
     }
-    
+
   }
-  
+
   void full() {
     hunger = 0;
     spawn = true;
   }
-  
+
   void draw() {
     if (starved) {
       noFill();
     } else {
-      fill(255, 255.0 * (maxHunger - hunger) / maxHunger);
+      fill(bodyColor, 255.0 * (maxHunger - hunger) / maxHunger);
     }
     stroke(255, 10); strokeWeight(1);
     ellipse(location.x, location.y, size, size);
@@ -241,12 +250,12 @@ class Bug {
 class Food {
   PVector location;
   int size;
-  
+
   Food(PVector location, int size) {
     this.location = location;
     this.size = size;
   }
-  
+
   boolean eat(PVector bugLocation, int bugSize) {
     PVector distance = new PVector(bugLocation.x, bugLocation.y);
     distance.sub(location);
@@ -256,7 +265,7 @@ class Food {
       return false;
     }
   }
-  
+
   void draw() {
     fill(#00FF00, 100); stroke(255, 100); strokeWeight(3);
     ellipse(location.x, location.y, size, size);
