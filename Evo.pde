@@ -32,6 +32,7 @@ Arena arena;
 
 int FOOD_TIMER = 20;   // P_f
 int FOOD_SIZE = 15;    // D_f
+int BUG_SIZE = 5;      // D_b
 int SPAWN_COUNT = 5;   // S_b
 float MAX_SPEED = 1.0; // V_b
 int MAX_HUNGER = 500;  // H_b
@@ -54,7 +55,7 @@ void setup() {
     randomX = random(0, arena.w);
     randomY = random(0, arena.h);
     randomLocation = new PVector(randomX, randomY);
-    randomBug = new Bug(30, MAX_SPEED, randomLocation, MAX_HUNGER, SPAWN_COUNT);
+    randomBug = new Bug(30, MAX_SPEED, randomLocation, MAX_HUNGER, SPAWN_COUNT, BUG_SIZE);
     population.add(randomBug);
   }
   
@@ -101,7 +102,7 @@ void draw() {
       bug = population.get(b);
       for (int f=noms.size()-1; f>=0; f--) {
         nom = noms.get(f);
-        if (nom.eat(bug.location)) {
+        if (nom.eat(bug.location, bug.size)) {
           bug.full();
           noms.remove(f);
         }
@@ -114,7 +115,7 @@ void draw() {
           newLocation = new PVector(bug.location.x, bug.location.y);
           newVelocity = new PVector(bug.velocity.x, bug.velocity.y);
           newAcceleration = new PVector(bug.acceleration.x, bug.acceleration.y);
-          newBug = new Bug(30, MAX_SPEED, newLocation, MAX_HUNGER, SPAWN_COUNT);
+          newBug = new Bug(30, MAX_SPEED, newLocation, MAX_HUNGER, SPAWN_COUNT, BUG_SIZE);
           newBug.velocity = newVelocity;
           //newBug.acceleration = newAcceleration;
           
@@ -162,23 +163,24 @@ class Arena {
   }
   
   void draw() {
-    fill(50); noStroke();
-    rect(0, 0, w, h);
+    noFill(); stroke(50); strokeWeight(FOOD_SIZE);
+    rect(0, 0, w, h, FOOD_SIZE);
   }
 }
 
 class Bug {
   float sightRange, maxSpeed;
   PVector location, velocity, acceleration;
-  int hunger, maxHunger, spawnSize;
+  int hunger, maxHunger, spawnSize, size;
   boolean starved, spawn;
   
-  Bug(float sightRange, float maxSpeed, PVector location, int maxHunger, int spawnSize) {
+  Bug(float sightRange, float maxSpeed, PVector location, int maxHunger, int spawnSize, int size) {
     this.sightRange = sightRange;
     this.maxSpeed = maxSpeed;
     this.location = location;
     this.maxHunger = maxHunger;
     this.spawnSize = spawnSize;
+    this.size = size;
     
     velocity = new PVector(0,0,0);
     acceleration = new PVector(0,0,0);
@@ -230,7 +232,8 @@ class Bug {
     } else {
       fill(255, 255.0 * (maxHunger - hunger) / maxHunger);
     }
-    ellipse(location.x, location.y, 5*(maxHunger - hunger) / maxHunger, 5*(maxHunger - hunger) / maxHunger);
+    stroke(255, 10); strokeWeight(1);
+    ellipse(location.x, location.y, size, size);
   }
 }
 
@@ -243,10 +246,10 @@ class Food {
     this.size = size;
   }
   
-  boolean eat(PVector bugLocation) {
+  boolean eat(PVector bugLocation, int bugSize) {
     PVector distance = new PVector(bugLocation.x, bugLocation.y);
     distance.sub(location);
-    if (distance.mag() < size/2) {
+    if (distance.mag() < 0.5*(size+bugSize)) {
       return true;
     } else {
       return false;
@@ -254,7 +257,7 @@ class Food {
   }
   
   void draw() {
-    fill(#00FF00, 100);
+    fill(#00FF00, 100); stroke(255, 100); strokeWeight(3);
     ellipse(location.x, location.y, size, size);
   }
 }
