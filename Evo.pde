@@ -138,7 +138,11 @@ void draw() {
     b.draw();
   }
   
-  println(population.size());
+  if (!run) {
+    fill(255);
+    textAlign(CENTER);
+    text("Press SPACEBAR to begin.", arena.w/2, arena.h/2);
+  }
 }
 
 class Arena {
