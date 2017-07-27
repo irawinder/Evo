@@ -10,7 +10,7 @@ Environment for testing natural selection processes on some digital "bugs"
     P_f, period of food generation [ticks]
 
     D_b, diameter of bug [pixels]
-    V_b, maximum velocity of a "bug" [pixels/frame]
+    V_b, maximum velocity of a "bug" [pixels/tick]
     S_b, number of bugs "spawned" when food eaten [bugs]
     H_b, number of ticks a bug can go without food before death [ticks]
 
