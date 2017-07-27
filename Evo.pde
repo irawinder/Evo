@@ -30,8 +30,8 @@ ArrayList<Bug> population;
 ArrayList<Food> noms;
 Arena arena;
 
-int FOOD_TIMER = 20;
-int SPAWN_COUNT = 5;
+int FOOD_TIMER = 10;
+int SPAWN_COUNT = 10;
 int counter;
 
 boolean run;
