@@ -1,6 +1,7 @@
 /*  Ira Winder, jiw@mit.edu
  *
  *  An environment for testing natural selection processing on some digital "bugs"
+ *  Groovy colors by Anton (adewinter).
  */
 
 /*  Key Parameters:
