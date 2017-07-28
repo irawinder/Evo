@@ -184,7 +184,9 @@ class Bug {
     this.size = size;
 
     if (this.bodyColor == -1) {
-      this.bodyColor = color(random(125), random(255), random(255));
+      colorMode(HSB);
+      this.bodyColor = color(random(255), 255, 255);
+      colorMode(RGB);
     }
     velocity = new PVector(0,0,0);
     acceleration = new PVector(0,0,0);
