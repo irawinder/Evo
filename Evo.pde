@@ -1,7 +1,7 @@
 /*  Ira Winder, jiw@mit.edu
  *
  *  An environment for testing natural selection processing on some digital "bugs"
- *  Groovy colors by Anton (adewinter).
+ *  Groovy PREDATORS by Anton (adewinter)!
  */
 
 /*  Key Parameters:
@@ -44,6 +44,7 @@ int BUG_INITIAL_COUNT = 50;
 
 int PREDATOR_INITIAL_COUNT = 5;
 int PREDATOR_SPAWN_COUNT = 1;
+float PREDATOR_SPAWN_CHANCE = 10.0;  // ( 0 - 100% )
 int PREDATOR_MAX_HUNGER = 200;
 float PREDATOR_MAX_SPEED = 2;
 int PREDATOR_SIZE = 10;
@@ -191,6 +192,7 @@ void draw() {
   // Draw Predators
   for (Predator p : preds) {
     p.draw();
+    p.nomBlip();
   }
 
   if (!run) {
@@ -230,7 +232,7 @@ class Bug {
 
     if (this.bodyColor == -1) {
       colorMode(HSB);
-      this.bodyColor = color(random(255), 255, 255);
+      this.bodyColor = color(125+random(100), 255, 255);
       colorMode(RGB);
     }
     velocity = new PVector(0,0,0);
@@ -294,6 +296,10 @@ class Bug {
 }
 
 class Predator extends Bug {
+  
+  int NOM_BLIP_TICKS = 5;
+  int nomBlip = 0;
+  
   Predator(float maxSpeed, PVector location, int maxHunger, int spawnSize, int size) {
     super(maxSpeed, location, maxHunger, spawnSize, size, color(255,0,0)); //Predators are always RED
   }
@@ -303,21 +309,33 @@ class Predator extends Bug {
     distance.sub(location);
 
     if (distance.mag() < 0.5*(size+bug.size)) {
+      nomBlip = NOM_BLIP_TICKS;
       return true;
     } else {
       return false;
     }
   }
-
+  
   void spawn() {
     if(this.spawn) {
-      for (int j=0; j<this.spawnSize; j++) {
-        PVector newLocation = new PVector(this.location.x, this.location.y);
-        Predator newPred = new Predator(this.maxSpeed, newLocation, this.maxHunger, this.spawnSize, this.size); //inherit from the properties of the spawn-er
-        newPred.velocity = new PVector(this.velocity.x, this.velocity.y);
-        preds.add(newPred);
+      if (random(100.0) < PREDATOR_SPAWN_CHANCE) { // Only spawns predators a fraction of the time.  Has the effect of predorator eating "many" bugs before spawning
+        for (int j=0; j<this.spawnSize; j++) {
+          PVector newLocation = new PVector(this.location.x, this.location.y);
+          Predator newPred = new Predator(this.maxSpeed, newLocation, this.maxHunger, this.spawnSize, this.size); //inherit from the properties of the spawn-er
+          newPred.velocity = new PVector(this.velocity.x, this.velocity.y);
+          preds.add(newPred);
+        }
       }
       this.spawn = false;
+    }
+  }
+  
+  void nomBlip() {
+    if (nomBlip > 0) {
+      fill(255); 
+      textAlign(CENTER);
+      text("nom", location.x, location.y + size);
+      nomBlip--;
     }
   }
 }
@@ -342,7 +360,7 @@ class Food {
   }
 
   void draw() {
-    fill(100, 100); stroke(255, 100); strokeWeight(3);
+    fill(#00CC00, 100); stroke(255, 100); strokeWeight(3);
     ellipse(location.x, location.y, size, size);
   }
 }
