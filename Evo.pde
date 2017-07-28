@@ -1,6 +1,7 @@
 /*  Ira Winder, jiw@mit.edu
  *
  *  An environment for testing natural selection processing on some digital "bugs"
+ *  Groovy colors by Anton (adewinter).
  */
 
 /*  Key Parameters:
@@ -31,7 +32,7 @@ ArrayList<Food> noms;
 ArrayList<Predator> preds;
 Arena arena;
 
-int FOOD_TIMER = 20;   // P_f
+int FOOD_TIMER = 5;   // P_f
 int FOOD_SIZE = 15;    // D_f
 int FOOD_INITIAL_COUNT = 30;
 
@@ -39,7 +40,7 @@ int SPAWN_COUNT = 5;   // S_b
 float MAX_SPEED = 1.0; // V_b
 int MAX_HUNGER = 500;  // H_b
 int BUG_SIZE = 5;      // D_b
-int BUG_INITIAL_COUNT = 10;
+int BUG_INITIAL_COUNT = 50;
 
 int PREDATOR_INITIAL_COUNT = 5;
 int PREDATOR_SPAWN_COUNT = 1;
@@ -92,7 +93,7 @@ void setup() {
   }
 
   counter = 0;
-  run = true;
+  run = false;
 }
 
 Food nom, newFood;
@@ -228,7 +229,9 @@ class Bug {
     this.size = size;
 
     if (this.bodyColor == -1) {
-      this.bodyColor = color(random(125), random(255), random(255));
+      colorMode(HSB);
+      this.bodyColor = color(random(255), 255, 255);
+      colorMode(RGB);
     }
     velocity = new PVector(0,0,0);
     acceleration = new PVector(0,0,0);
@@ -339,7 +342,7 @@ class Food {
   }
 
   void draw() {
-    fill(#00FF00, 100); stroke(255, 100); strokeWeight(3);
+    fill(100, 100); stroke(255, 100); strokeWeight(3);
     ellipse(location.x, location.y, size, size);
   }
 }
