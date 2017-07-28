@@ -31,7 +31,7 @@ ArrayList<Bug> population;
 ArrayList<Food> noms;
 Arena arena;
 
-int FOOD_TIMER = 20;   // P_f
+int FOOD_TIMER = 5;   // P_f
 int FOOD_SIZE = 15;    // D_f
 int BUG_SIZE = 5;      // D_b
 int SPAWN_COUNT = 5;   // S_b
@@ -52,7 +52,7 @@ void setup() {
 
   // Random Bugs
   Bug randomBug;
-  for (int i=0; i<10; i++) {
+  for (int i=0; i<50; i++) {
     randomX = random(0, arena.w);
     randomY = random(0, arena.h);
     randomLocation = new PVector(randomX, randomY);
@@ -62,7 +62,7 @@ void setup() {
 
   // Random Food
   Food randomFood;
-  for (int i=0; i<20; i++) {
+  for (int i=0; i<30; i++) {
     randomX = random(0, arena.w);
     randomY = random(0, arena.h);
     randomLocation = new PVector(randomX, randomY);
