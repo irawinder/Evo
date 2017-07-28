@@ -334,7 +334,7 @@ class Predator extends Bug {
     if (nomBlip > 0) {
       fill(255); 
       textAlign(CENTER);
-      text("nom", location.x, location.y + size);
+      text("nom!", location.x, location.y + 2*size);
       nomBlip--;
     }
   }
