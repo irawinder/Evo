@@ -268,7 +268,7 @@ class Food {
   }
 
   void draw() {
-    fill(#00FF00, 100); stroke(255, 100); strokeWeight(3);
+    fill(100, 100); stroke(255, 100); strokeWeight(3);
     ellipse(location.x, location.y, size, size);
   }
 }
