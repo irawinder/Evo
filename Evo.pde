@@ -29,14 +29,25 @@
 
 ArrayList<Bug> population;
 ArrayList<Food> noms;
+ArrayList<Predator> preds;
 Arena arena;
 
 int FOOD_TIMER = 5;   // P_f
 int FOOD_SIZE = 15;    // D_f
-int BUG_SIZE = 5;      // D_b
+int FOOD_INITIAL_COUNT = 30;
+
 int SPAWN_COUNT = 5;   // S_b
 float MAX_SPEED = 1.0; // V_b
 int MAX_HUNGER = 500;  // H_b
+int BUG_SIZE = 5;      // D_b
+int BUG_INITIAL_COUNT = 50;
+
+int PREDATOR_INITIAL_COUNT = 5;
+int PREDATOR_SPAWN_COUNT = 1;
+int PREDATOR_MAX_HUNGER = 200;
+float PREDATOR_MAX_SPEED = 2;
+int PREDATOR_SIZE = 10;
+
 int counter;
 
 boolean run;
@@ -46,13 +57,14 @@ void setup() {
   arena = new Arena(600, 600); // W, H
   population = new ArrayList<Bug>();
   noms = new ArrayList<Food>();
+  preds = new ArrayList<Predator>();
 
   PVector randomLocation;
   float randomX, randomY;
 
   // Random Bugs
   Bug randomBug;
-  for (int i=0; i<50; i++) {
+  for (int i=0; i<BUG_INITIAL_COUNT; i++) {
     randomX = random(0, arena.w);
     randomY = random(0, arena.h);
     randomLocation = new PVector(randomX, randomY);
@@ -62,12 +74,22 @@ void setup() {
 
   // Random Food
   Food randomFood;
-  for (int i=0; i<30; i++) {
+  for (int i=0; i<FOOD_INITIAL_COUNT; i++) {
     randomX = random(0, arena.w);
     randomY = random(0, arena.h);
     randomLocation = new PVector(randomX, randomY);
     randomFood = new Food(randomLocation, FOOD_SIZE);
     noms.add(randomFood);
+  }
+
+  // Random Predators
+  Predator randomPredator;
+  for (int i=0; i<PREDATOR_INITIAL_COUNT; i++) {
+    randomX = random(0, arena.w);
+    randomY = random(0, arena.h);
+    randomLocation = new PVector(randomX, randomY);
+    randomPredator = new Predator(PREDATOR_MAX_SPEED, randomLocation, PREDATOR_MAX_HUNGER, PREDATOR_SPAWN_COUNT, PREDATOR_SIZE);
+    preds.add(randomPredator);
   }
 
   counter = 0;
@@ -101,12 +123,12 @@ void draw() {
     // Update Food
     for (int b=population.size()-1; b>=0; b--) {
       bug = population.get(b);
+
       for (int f=noms.size()-1; f>=0; f--) {
         nom = noms.get(f);
         if (nom.eat(bug.location, bug.size)) {
           bug.full();
-          noms.remove(f);
-          break;
+          noms.remove(nom);
         }
       }
 
@@ -119,8 +141,6 @@ void draw() {
           newAcceleration = new PVector(bug.acceleration.x, bug.acceleration.y);
           newBug = new Bug(MAX_SPEED, newLocation, MAX_HUNGER, SPAWN_COUNT, BUG_SIZE, bug.bodyColor);
           newBug.velocity = newVelocity;
-          //newBug.acceleration = newAcceleration;
-
           population.add(newBug);
         }
         bug.spawn = false;
@@ -131,9 +151,28 @@ void draw() {
     for (int i=population.size()-1; i>=0; i--) {
       bug = population.get(i);
       if (bug.starved) {
-        population.remove(i);
+        population.remove(bug);
       }
       bug.update(arena);
+
+      // Check if any predator ate this particular bug
+      for (int p=preds.size()-1; p>=0; p--) {
+        Predator pred = preds.get(p);
+        if (pred.willEat(bug)) {
+          pred.full();
+          population.remove(bug);
+        }
+      }
+    }
+
+    // Update Predators
+    for (int p=preds.size()-1; p>=0; p--) {
+      Predator pred = preds.get(p);
+      pred.spawn();
+      if(pred.starved) {
+        preds.remove(pred);
+      }
+      pred.update(arena);
     }
 
     counter++;
@@ -147,6 +186,11 @@ void draw() {
   // Draw Bugs
   for (Bug b : population) {
     b.draw();
+  }
+
+  // Draw Predators
+  for (Predator p : preds) {
+    p.draw();
   }
 
   if (!run) {
@@ -246,6 +290,35 @@ class Bug {
     }
     stroke(255, 10); strokeWeight(1);
     ellipse(location.x, location.y, size, size);
+  }
+}
+
+class Predator extends Bug {
+  Predator(float maxSpeed, PVector location, int maxHunger, int spawnSize, int size) {
+    super(maxSpeed, location, maxHunger, spawnSize, size, color(255,0,0)); //Predators are always RED
+  }
+
+  boolean willEat(Bug bug) {
+    PVector distance = new PVector(bug.location.x, bug.location.y);
+    distance.sub(location);
+
+    if (distance.mag() < 0.5*(size+bug.size)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  void spawn() {
+    if(this.spawn) {
+      for (int j=0; j<this.spawnSize; j++) {
+        PVector newLocation = new PVector(this.location.x, this.location.y);
+        Predator newPred = new Predator(this.maxSpeed, newLocation, this.maxHunger, this.spawnSize, this.size); //inherit from the properties of the spawn-er
+        newPred.velocity = new PVector(this.velocity.x, this.velocity.y);
+        preds.add(newPred);
+      }
+      this.spawn = false;
+    }
   }
 }
 
